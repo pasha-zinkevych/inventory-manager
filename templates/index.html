@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Entry Manager</title>
+    <script src="/static/scripts/app.js"></script>
+</head>
+<body>
+    <header>
+        <button onclick="showAddEntry()">Add New Entry</button>
+        <button onclick="showEntries()">View Entries</button>
+    </header>
+
+    <div id="add-entry" style="display: none;">
+        <h1>Add New Entry</h1>
+        <form id="entry-form" action="/entry" method="post" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" name="name" required><br><br>
+
+            <label for="file">Picture:</label>
+            <input type="file" name="file" accept="image/*" required><br><br>
+
+            <h3>Custom Fields</h3>
+            <div id="custom-fields">
+                <button type="button" onclick="addField()">Add Field</button>
+            </div>
+
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="entries" style="display: block;">
+        <h2>Entries</h2>
+        <table border="1" id="entries-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Custom Data</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="pagination">
+            <button onclick="changePage(-1)">Previous</button>
+            <span id="page-info">Page 1</span>
+            <button onclick="changePage(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const PAGE_SIZE = 10;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadEntries(currentPage);
+        });
+
+        function addField() {
+            const div = document.createElement("div");
+            div.className = "field";
+            div.innerHTML = `
+                <input type="text" name="custom_data_key" placeholder="Field Label" required>
+                <input type="text" name="custom_data_value" placeholder="Field Data" required>
+                <button type="button" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            document.getElementById("custom-fields").appendChild(div);
+        }
+
+        function showAddEntry() {
+            document.getElementById("add-entry").style.display = "block";
+            document.getElementById("entries").style.display = "none";
+        }
+
+        function showEntries() {
+            document.getElementById("add-entry").style.display = "none";
+            document.getElementById("entries").style.display = "block";
+            loadEntries(currentPage);
+        }
+
+        async function loadEntries(page) {
+            const response = await fetch(`/entries?page=${page}`);
+            const data = await response.json();
+            const tableBody = document.getElementById("entries-table").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = "";
+
+            data.entries.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${entry.id}</td>
+                    <td>${entry.name}</td>
+                    <td>${JSON.stringify(entry.custom_data)}</td>
+                    <td><img src="${entry.picture_path}" alt="Entry Image" width="50"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById("page-info").innerText = `Page ${data.page} of ${data.total_pages}`;
+            currentPage = data.page;
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage > 0) {
+                loadEntries(newPage);
+            }
+        }
+    </script>
+</body>
+</html>

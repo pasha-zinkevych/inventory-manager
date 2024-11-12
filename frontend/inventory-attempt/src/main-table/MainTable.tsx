@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import React from "react";
 export type entryDataType = {
   id: number;
@@ -13,7 +13,7 @@ type PropsType = {
 
 export function MainTable(props: PropsType) {
   return (
-    <div>
+    <Box component="form" sx={{ "& > :not(style)": { m: 2, width: "75%" } }} noValidate autoComplete="off">
       {props.entries.map((i) => {
         return (
           <div>
@@ -28,6 +28,6 @@ export function MainTable(props: PropsType) {
           </div>
         );
       })}
-    </div>
+    </Box>
   );
 }

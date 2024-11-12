@@ -2,11 +2,10 @@ import React from "react";
 import "./App.css";
 import { Tab, Box } from "@mui/material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
-import { AddNewEntry } from "./add-new-entry/AddNewEntry";
-import { EntryTable } from "./entry-table/EntryTable";
 import { GalleryTable } from "./gallery-table/GalleryTable";
 import { SearchTable } from "./search-table/SearchTable";
 import { entryDataType, MainTable } from "./main-table/MainTable";
+import AddNewEntry from "./add-new-entry/AddNewEntry";
 
 const entryData: Array<entryDataType> = [
   { id: 1, name: "Test1", comesFrom: "zalupa1", imgUrl: "https://picsum.photos/100" },
@@ -14,12 +13,13 @@ const entryData: Array<entryDataType> = [
   { id: 3, name: "Test3", comesFrom: "zalupa3", imgUrl: "https://picsum.photos/300" },
 ];
 
-function App() {
-  const [value, setValue] = React.useState(0);
+const App: React.FC = () => {
+  const [value, setValue] = React.useState("2");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+  console.log(value);
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
@@ -36,7 +36,7 @@ function App() {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <AddNewEntry />
+          <AddNewEntry onAddNewEntry={handleChange} />
         </TabPanel>
         <TabPanel value="2">
           <MainTable entries={entryData} />
@@ -50,6 +50,6 @@ function App() {
       </TabContext>
     </Box>
   );
-}
+};
 
 export default App;

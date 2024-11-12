@@ -1,7 +1,9 @@
+import { TextField } from "@mui/material";
+
 export function SearchTable() {
   return (
     <div>
-      <input type="text" />
+      <TextField id="outlined-basic" label="Search..." variant="outlined" />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import os
 import qrcode
 
 PAGE_SIZE = 10
-IMAGES_FOLDER = "db/images"
+IMAGES_FOLDER = "static/images"
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -19,7 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Database setup
 def init_db():
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS entries (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,7 +48,7 @@ class Entry(BaseModel):
 # Add new entry
 @app.post("/api/entry")
 async def add_entry_api(name: str, comes_from: str, images: list[UploadFile] = File(...), custom_data: Optional[dict] = {}):
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     # Save images
@@ -71,7 +71,7 @@ async def add_entry_api(name: str, comes_from: str, images: list[UploadFile] = F
 # Get specific entry
 @app.get("/api/entry/{entry_id}")
 async def get_entry_api(entry_id: int):
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, comes_from, image_paths, custom_data FROM entries WHERE id = ?", (entry_id,))
     entry = cursor.fetchone()
@@ -83,7 +83,7 @@ async def get_entry_api(entry_id: int):
 # Delete an entry
 @app.delete("/api/entry/{entry_id}")
 async def delete_entry_api(entry_id: int):
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
     conn.commit()
@@ -93,7 +93,7 @@ async def delete_entry_api(entry_id: int):
 # List all entries
 @app.get("/api/entries")
 async def list_entries_api(page: int = 1):
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM entries")
     total_entries = cursor.fetchone()[0]
@@ -125,7 +125,7 @@ async def list_entries_api(page: int = 1):
 # Get metainfo, such as entries per page, etc
 @app.get("/api/meta")
 async def meta():
-    conn = sqlite3.connect("db/database.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM entries")
     total_entries = cursor.fetchone()[0]

@@ -1,5 +1,4 @@
 .direnv/*
 _build/*
-database.db
-__pycache__/*
-static/images
+db/
+backend/__pycache__/*

@@ -2,3 +2,4 @@
 _build/*
 database.db
 __pycache__/*
+static/images

@@ -1,6 +1,7 @@
 import { Box, Button } from "@mui/material";
-import React from "react";
-export type entryDataType = {
+import React, { useState } from "react";
+import EntryTable from "../entry-table/EntryTable";
+export type EntryDataType = {
   id: number;
   name: string;
   comesFrom: string;
@@ -8,23 +9,27 @@ export type entryDataType = {
 };
 
 type PropsType = {
-  entries: Array<entryDataType>;
+  entry: Array<EntryDataType>;
 };
 
 export function MainTable(props: PropsType) {
+  const [activeEntryTable, setActiveEntryTable] = useState<number | null>(null);
+
+  const handleToggleEntryTable = (id: number) => {
+    setActiveEntryTable((prevId) => (prevId === id ? null : id));
+  };
+
   return (
     <Box component="form" sx={{ "& > :not(style)": { m: 2, width: "75%" } }} noValidate autoComplete="off">
-      {props.entries.map((i) => {
+      {props.entry.map((item) => {
         return (
-          <div>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                alert("action");
-              }}>
-              Id: {i.id}. Name: {i.name}. Comes From: {i.comesFrom}.
+          <div key={item.id}>
+            <Button color="primary" variant="contained" onClick={() => handleToggleEntryTable(item.id)}>
+              {activeEntryTable === item.id ? "Hide" : "Show"} Id: {item.id}. Name: {item.name}. Comes From:{" "}
+              {item.comesFrom}.
             </Button>
+
+            {activeEntryTable === item.id && <EntryTable entry={item} />}
           </div>
         );
       })}

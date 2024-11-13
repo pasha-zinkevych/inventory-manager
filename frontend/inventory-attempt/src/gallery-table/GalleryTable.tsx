@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { entryDataType } from "../main-table/MainTable";
+import { EntryDataType } from "../main-table/MainTable";
 import { ImageList, ImageListItem } from "@mui/material";
 
 type PropsType = {
-  entries: Array<entryDataType>;
+  entry: Array<EntryDataType>;
 };
 
 export function GalleryTable(props: PropsType) {
@@ -15,7 +15,7 @@ export function GalleryTable(props: PropsType) {
   return (
     <div>
       <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-        {props.entries.map((item) => {
+        {props.entry.map((item) => {
           return (
             <ImageListItem key={item.imgUrl}>
               <img
@@ -31,7 +31,7 @@ export function GalleryTable(props: PropsType) {
         })}
         {fullScreenImageId !== null && (
           <div className="overlay" onClick={() => toggleFullScreen(null)}>
-            <img src={props.entries.find((img) => img.id === fullScreenImageId)?.imgUrl} className="full-screen" />
+            <img src={props.entry.find((img) => img.id === fullScreenImageId)?.imgUrl} className="full-screen" />
           </div>
         )}
       </ImageList>
